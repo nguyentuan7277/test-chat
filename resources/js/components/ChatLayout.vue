@@ -41,8 +41,10 @@ export default {
   created() {
     this.loadMessage()
     Echo.channel('laravel_database_chatroom')
-    .listen('MessagePosted', (data) => {
-      console.log(data)
+    .listen('.send.message', (data) => {
+      let message = data.message
+        message.user = data.user
+        this.list_messages.push(message)
     })
   },
   methods: {

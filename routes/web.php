@@ -34,13 +34,14 @@ Route::get('/messages', function() {
     return App\Message::with('user')->get();
 })->middleware('auth');
 
-Route::get('/api/message', function() {
+Route::post('/messages', function() {
     // $user = Auth::user();
-    $user = User::find(1);
-    $message = new App\Message();
-    $message->message = rand();
-    $message->user_id = rand();
-    $message->save();
+    $user = Auth::user();
+
+  $message = new App\Message();
+  $message->message = request()->get('message', '');
+  $message->user_id = $user->id;
+  $message->save();
 
     broadcast(new App\Events\MessagePosted($message, $user))->toOthers();
     return ['message' => $message->load('user')];
